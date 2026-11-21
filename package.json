@@ -16,9 +16,13 @@
   "author": "",
   "license": "ISC",
   "description": "Thread Elite - Student Leadership & Professional Development Program Website",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
     "bcryptjs": "^3.0.3",
     "bullmq": "^6.7.8",
@@ -39,14 +43,15 @@
     "react-dom": "^19.3.0",
     "react-router-dom": "^7.18.3",
     "resend": "^6.39.0",
+    "tailwindcss": "^4.3.3",
     "three": "^0.187.0",
     "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
     "uuid": "^14.0.3",
     "vite": "^8.3.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
@@ -60,9 +65,6 @@
     "prisma": "^6.12.0",
     "sharp": "^0.35.5",
     "supertest": "^7.3.2",
-    "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
     "vitest": "^4.1.12"
   }
 }
