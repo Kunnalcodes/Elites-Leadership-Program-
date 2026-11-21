@@ -124,23 +124,35 @@ export function SuperAdminDashboard({ user, onLogout }) {
         api.getPromotionLevels(),
       ]);
 
-      if (usersRes.status === 'fulfilled' && usersRes.value?.data?.users) {
-        setUsersList(usersRes.value.data.users);
+      if (usersRes.status === 'fulfilled') {
+        const u = usersRes.value?.data;
+        const list = Array.isArray(u) ? u : (u?.users || []);
+        if (list.length > 0) setUsersList(list);
       }
-      if (tasksRes.status === 'fulfilled' && tasksRes.value?.data?.tasks) {
-        setTasksList(tasksRes.value.data.tasks);
+      if (tasksRes.status === 'fulfilled') {
+        const t = tasksRes.value?.data;
+        const list = Array.isArray(t) ? t : (t?.tasks || []);
+        if (list.length > 0) setTasksList(list);
       }
-      if (lbRes.status === 'fulfilled' && lbRes.value?.data?.leaderboard) {
-        setLeaderboard(lbRes.value.data.leaderboard);
+      if (lbRes.status === 'fulfilled') {
+        const l = lbRes.value?.data;
+        const list = Array.isArray(l) ? l : (l?.leaderboard || []);
+        if (list.length > 0) setLeaderboard(list);
       }
-      if (annRes.status === 'fulfilled' && annRes.value?.data?.announcements) {
-        setAnnouncements(annRes.value.data.announcements);
+      if (annRes.status === 'fulfilled') {
+        const a = annRes.value?.data;
+        const list = Array.isArray(a) ? a : (a?.announcements || []);
+        if (list.length > 0) setAnnouncements(list);
       }
-      if (auditRes.status === 'fulfilled' && auditRes.value?.data?.logs) {
-        setAuditLogs(auditRes.value.data.logs);
+      if (auditRes.status === 'fulfilled') {
+        const au = auditRes.value?.data;
+        const list = Array.isArray(au) ? au : (au?.logs || []);
+        if (list.length > 0) setAuditLogs(list);
       }
-      if (levelsRes.status === 'fulfilled' && levelsRes.value?.data?.levels) {
-        setPromotionLevels(levelsRes.value.data.levels);
+      if (levelsRes.status === 'fulfilled') {
+        const lv = levelsRes.value?.data;
+        const list = Array.isArray(lv) ? lv : (lv?.levels || []);
+        if (list.length > 0) setPromotionLevels(lvls => list);
       }
     } catch (err) {
       console.error('Error loading dashboard data:', err);
@@ -163,7 +175,7 @@ export function SuperAdminDashboard({ user, onLogout }) {
   const handleCreateUser = async (e) => {
     e.preventDefault();
     try {
-      await api.createUser(newUserForm);
+      const res = await api.createUser(newUserForm);
       showToast('success', `User ${newUserForm.fullName} provisioned successfully!`);
       setShowCreateUserModal(false);
       setNewUserForm({
@@ -174,6 +186,9 @@ export function SuperAdminDashboard({ user, onLogout }) {
         initialPassword: 'ElitePassword2026!',
         promotionLevelId: 'level-catalyst'
       });
+      if (res?.data) {
+        setUsersList((prev) => [res.data, ...prev.filter(u => u.id !== res.data.id && u.id !== res.data.userId)]);
+      }
       loadData();
     } catch (err) {
       showToast('error', err.message || 'Failed to provision user.');

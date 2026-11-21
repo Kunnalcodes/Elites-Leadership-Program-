@@ -98,19 +98,29 @@ export function TaskMentorDashboard({ user, onLogout }) {
         api.getConversations(),
       ]);
 
-      if (usersRes.status === 'fulfilled' && usersRes.value?.data?.users) {
-        setMyElites(usersRes.value.data.users);
+      if (usersRes.status === 'fulfilled') {
+        const u = usersRes.value?.data;
+        const list = Array.isArray(u) ? u : (u?.users || []);
+        if (list.length > 0) setMyElites(list);
       }
-      if (tasksRes.status === 'fulfilled' && tasksRes.value?.data?.tasks) {
-        setTasks(tasksRes.value.data.tasks);
+      if (tasksRes.status === 'fulfilled') {
+        const t = tasksRes.value?.data;
+        const list = Array.isArray(t) ? t : (t?.tasks || []);
+        if (list.length > 0) setTasks(list);
       }
-      if (subRes.status === 'fulfilled' && subRes.value?.data?.submissions) {
-        setSubmissions(subRes.value.data.submissions);
+      if (subRes.status === 'fulfilled') {
+        const s = subRes.value?.data;
+        const list = Array.isArray(s) ? s : (s?.submissions || []);
+        if (list.length > 0) setSubmissions(list);
       }
-      if (convRes.status === 'fulfilled' && convRes.value?.data?.conversations) {
-        setConversations(convRes.value.data.conversations);
-        if (convRes.value.data.conversations.length > 0) {
-          setActiveConversation(convRes.value.data.conversations[0]);
+      if (convRes.status === 'fulfilled') {
+        const c = convRes.value?.data;
+        const list = Array.isArray(c) ? c : (c?.conversations || []);
+        if (list.length > 0) {
+          setConversations(list);
+          if (!activeConversation) {
+            setActiveConversation(list[0]);
+          }
         }
       }
     } catch (err) {
@@ -212,7 +222,7 @@ export function TaskMentorDashboard({ user, onLogout }) {
   const handleProvisionCadet = async (e) => {
     e.preventDefault();
     try {
-      await api.createUser({
+      const res = await api.createUser({
         fullName: provisionForm.fullName,
         email: provisionForm.email,
         eliteId: provisionForm.eliteId || undefined,
@@ -231,6 +241,9 @@ export function TaskMentorDashboard({ user, onLogout }) {
         initialPassword: 'ElitePass2026!',
         university: '',
       });
+      if (res?.data) {
+        setMyElites((prev) => [res.data, ...prev.filter(u => u.id !== res.data.id && u.id !== res.data.userId)]);
+      }
       loadData();
     } catch (err) {
       showToast('error', err.message || 'Failed to provision cadet.');

@@ -79,14 +79,14 @@ export function DashboardRouter() {
   return (
     <div className="relative">
       {/* Role View Rendering */}
-      {sessionUser.role === 'SUPER_ADMIN' && (
-        <SuperAdminDashboard user={sessionUser} onLogout={handleLogout} />
+      {effectiveRole === 'SUPER_ADMIN' && (
+        <SuperAdminDashboard user={activeUser} onLogout={handleLogout} />
       )}
-      {sessionUser.role === 'ADMIN' && (
-        <TaskMentorDashboard user={sessionUser} onLogout={handleLogout} />
+      {(effectiveRole === 'ADMIN' || effectiveRole === 'MENTOR') && (
+        <TaskMentorDashboard user={activeUser} onLogout={handleLogout} />
       )}
-      {sessionUser.role === 'ELITE' && (
-        <EliteDashboard user={sessionUser} onLogout={handleLogout} />
+      {effectiveRole === 'ELITE' && (
+        <EliteDashboard user={activeUser} onLogout={handleLogout} />
       )}
     </div>
   );

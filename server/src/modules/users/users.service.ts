@@ -338,11 +338,17 @@ export class UsersService {
     });
 
     return {
+      id: userId,
       userId,
       email: newUser.email,
       fullName: newProfile.fullName,
       role: newUser.role,
+      status: newUser.status,
       eliteId: newProfile.eliteId,
+      currentLevel: dto.role === ROLES.ELITE ? { id: 'level-foundation', name: 'Foundation', slug: 'foundation', levelOrder: 1 } : null,
+      xpBalance: 0,
+      streakDays: 0,
+      createdAt: newUser.createdAt,
     };
   }
 
