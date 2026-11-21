@@ -15,7 +15,7 @@ async function startServer() {
     // 2. Initialize application
     const app = createApp();
 
-    const server = app.listen(ENV.PORT, () => {
+    const server = app.listen(ENV.PORT, '0.0.0.0', () => {
       console.log(`================================================================`);
       console.log(`🚀 THREAD ELITE PROGRAM MANAGEMENT BACKEND OPERATIONAL`);
       console.log(`📡 Listening on: http://localhost:${ENV.PORT}`);

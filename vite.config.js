@@ -47,6 +47,30 @@ export default defineConfig({
     tailwindcss(),
     backendServerPlugin()
   ],
+  build: {
+    chunkSizeWarningLimit: 2500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('three') || id.includes('ogl')) {
+              return 'vendor-graphics';
+            }
+            if (id.includes('framer-motion') || id.includes('gsap')) {
+              return 'vendor-animation';
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('react')) {
+              return 'vendor-react';
+            }
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
   server: {
     port: 3000,
     open: false,
