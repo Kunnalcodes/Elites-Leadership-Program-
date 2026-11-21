@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import fs from 'fs';
 import { ENV } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -93,8 +95,20 @@ export function createApp() {
 
   app.use('/api/v1', apiV1);
 
-  // Central Error Handler
+  // Central Error Handler for API routes
   app.use(errorHandler);
+
+  // In production, serve compiled Vite frontend from 'dist' directory
+  const distPath = path.resolve(process.cwd(), 'dist');
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    app.use((req, res, next) => {
+      if (req.method === 'GET' && !req.path.startsWith('/api') && req.path !== '/health') {
+        return res.sendFile(path.join(distPath, 'index.html'));
+      }
+      next();
+    });
+  }
 
   return app;
 }
