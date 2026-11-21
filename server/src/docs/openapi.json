@@ -1,0 +1,253 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Thread Elite Core Program Management API",
+    "version": "1.0.0",
+    "description": "Production-ready backend API for Thread Elite — Student Leadership & Professional Development Program operated by Thread Security."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session_token"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    { "cookieAuth": [] },
+    { "bearerAuth": [] }
+  ],
+  "paths": {
+    "/auth/super-admin/login": {
+      "post": {
+        "summary": "Super Admin Login (Initiates 6-digit OTP)",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP challenge issued" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/auth/admin/login": {
+      "post": {
+        "summary": "Admin / Task Master Login (Initiates 6-digit OTP)",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OTP challenge issued" } }
+      }
+    },
+    "/auth/elite/login": {
+      "post": {
+        "summary": "Elite Login (Initiates 8-character alphanumeric OTP)",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eliteId": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["eliteId", "password"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OTP challenge issued" } }
+      }
+    },
+    "/auth/otp/verify": {
+      "post": {
+        "summary": "Verify OTP and establish authenticated session",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "challengeId": { "type": "string", "format": "uuid" },
+                  "otpCode": { "type": "string" }
+                },
+                "required": ["challengeId", "otpCode"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Session established and cookie set" } }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "List users in directory CRM",
+        "tags": ["User Directory"],
+        "parameters": [
+          { "name": "role", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "type": "string" } },
+          { "name": "promotionLevelId", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Users retrieved" } }
+      },
+      "post": {
+        "summary": "Create user account",
+        "tags": ["User Directory"],
+        "responses": { "201": { "description": "User created" } }
+      }
+    },
+    "/users/provision-dashboard-access": {
+      "post": {
+        "summary": "One-click Dashboard Access Provisioning",
+        "tags": ["User Directory"],
+        "responses": { "200": { "description": "Dashboard access provisioned and activation dispatched" } }
+      }
+    },
+    "/promotion-levels": {
+      "get": {
+        "summary": "List all 5 promotion levels (Foundation -> Legacy)",
+        "tags": ["Progression"],
+        "responses": { "200": { "description": "Levels list" } }
+      }
+    },
+    "/elites/{id}/promote": {
+      "post": {
+        "summary": "Transactional promotion of an Elite",
+        "tags": ["Progression"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Elite promoted successfully" } }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "List tasks (scoped by caller role and targeting)",
+        "tags": ["Task Management"],
+        "responses": { "200": { "description": "Tasks list" } }
+      },
+      "post": {
+        "summary": "Create task supporting 23 formats and custom rubrics",
+        "tags": ["Task Management"],
+        "responses": { "201": { "description": "Task created" } }
+      }
+    },
+    "/tasks/{id}/publish": {
+      "post": {
+        "summary": "Publish and distribute task to targeted Elites",
+        "tags": ["Task Management"],
+        "responses": { "200": { "description": "Task published and distributed" } }
+      }
+    },
+    "/tasks/{id}/submissions": {
+      "post": {
+        "summary": "Submit task response (creates immutable version & receipt reference)",
+        "tags": ["Submissions"],
+        "responses": { "201": { "description": "Submission confirmed" } }
+      }
+    },
+    "/submissions/{id}/evaluate": {
+      "post": {
+        "summary": "Evaluate submission with rubric criteria scores and qualitative feedback",
+        "tags": ["Grading & Evaluation"],
+        "responses": { "200": { "description": "Submission evaluated" } }
+      }
+    },
+    "/submissions/{id}/publish-result": {
+      "post": {
+        "summary": "Publish evaluation result, post XP ledger transaction, recalculate rankings",
+        "tags": ["Grading & Evaluation"],
+        "responses": { "200": { "description": "Result published and XP awarded" } }
+      }
+    },
+    "/xp/transactions": {
+      "get": {
+        "summary": "Retrieve immutable double-entry XP ledger",
+        "tags": ["XP & Gamification"],
+        "responses": { "200": { "description": "Ledger transactions" } }
+      }
+    },
+    "/leaderboards": {
+      "get": {
+        "summary": "Retrieve live or published leaderboard standings",
+        "tags": ["Leaderboard"],
+        "responses": { "200": { "description": "Ranked standings" } }
+      }
+    },
+    "/leaderboards/top-three": {
+      "get": {
+        "summary": "Retrieve Top Three Champion, Runner-up, Third place showcase",
+        "tags": ["Leaderboard"],
+        "responses": { "200": { "description": "Top three showcase" } }
+      }
+    },
+    "/analytics/super-admin": {
+      "get": {
+        "summary": "Super Admin central analytics and metrics",
+        "tags": ["Analytics"],
+        "responses": { "200": { "description": "Super admin stats" } }
+      }
+    },
+    "/analytics/level/{levelId}": {
+      "get": {
+        "summary": "Scoped data contract for the 5 distinct promotion dashboards",
+        "tags": ["Analytics"],
+        "responses": { "200": { "description": "Promotion level workspace metrics" } }
+      }
+    },
+    "/settings/integrations": {
+      "get": {
+        "summary": "System Integration Registry (reporting PREP MODE vs OPERATIONAL with real health checks)",
+        "tags": ["System Settings"],
+        "responses": { "200": { "description": "Integration registry report" } }
+      }
+    },
+    "/audit": {
+      "get": {
+        "summary": "Immutable administrative audit trail explorer",
+        "tags": ["Audit"],
+        "responses": { "200": { "description": "Audit trail records" } }
+      }
+    }
+  }
+}

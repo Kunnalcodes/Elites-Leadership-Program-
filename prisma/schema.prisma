@@ -1,0 +1,764 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MENTOR
+  ELITE
+}
+
+enum AccountStatus {
+  PENDING_ACTIVATION
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+  ARCHIVED
+}
+
+enum EnrollmentStatus {
+  ENROLLED
+  IN_PROGRESS
+  GRADUATED
+  WITHDRAWN
+  SUSPENDED
+}
+
+enum TaskStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ACTIVE
+  SUBMISSION_RECEIVED
+  UNDER_REVIEW
+  GRADED
+  RESULT_PUBLISHED
+  COMPLETED
+  PAUSED
+  CANCELLED
+  EXPIRED
+  REOPENED
+}
+
+enum TaskDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum SubmissionStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  LATE_SUBMITTED
+  UNDER_REVIEW
+  REVISION_REQUESTED
+  RESUBMITTED
+  GRADED
+  RESULT_PUBLISHED
+  REJECTED
+  WITHDRAWN
+}
+
+enum XPTransactionType {
+  TASK_COMPLETION
+  ASSESSMENT
+  PARTICIPATION
+  LEADERSHIP
+  BONUS
+  EVENT_PARTICIPATION
+  MANUAL_ADJUSTMENT
+  PENALTY_DEDUCTION
+  REVERSAL
+}
+
+enum AnnouncementPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum AnnouncementStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  EXPIRED
+  ARCHIVED
+}
+
+enum DeliveryStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  FAILED
+  READ
+}
+
+enum ConversationStatus {
+  OPEN
+  WAITING_FOR_MENTOR
+  WAITING_FOR_ELITE
+  RESOLVED
+  ARCHIVED
+}
+
+enum IntegrationStatus {
+  NOT_CONFIGURED
+  PREP_MODE
+  CONFIGURED
+  CONNECTED
+  OPERATIONAL
+  DEGRADED
+  FAILED
+  DISABLED
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  passwordHash      String
+  role              UserRole           @default(ELITE)
+  status            AccountStatus      @default(PENDING_ACTIVATION)
+  isEmailVerified   Boolean            @default(false)
+  requiresPasswordReset Boolean        @default(false)
+  lastLoginAt       DateTime?
+  archivedAt        DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  profile           UserProfile?
+  sessions          Session[]
+  otpChallenges     OtpChallenge[]
+  permissions       UserRoleAssignment[]
+  adminActivities   AdminActivityLog[]
+  auditLogs         AuditLog[]         @relation("ActorAuditLogs")
+  
+  // Elite relations
+  levelMemberships  EliteLevelMembership[]
+  promotionHistory  PromotionHistory[]  @relation("ElitePromotionHistory")
+  promotionsGiven   PromotionHistory[]  @relation("PromotedByHistory")
+  mentorAssignments MentorAssignment[]  @relation("EliteMentorAssignments")
+  mentorForElites   MentorAssignment[]  @relation("MentorEliteAssignments")
+  taskAssignments   TaskAssignment[]
+  submissions       Submission[]
+  xpAccount         XPAccount?
+  xpTransactions    XPTransaction[]     @relation("EliteXPTransactions")
+  issuedXP          XPTransaction[]     @relation("AdminIssuedXP")
+  crmNotes          CRMNote[]           @relation("EliteCRMNotes")
+  authoredNotes     CRMNote[]           @relation("AuthorCRMNotes")
+  evaluations       Evaluation[]        @relation("EvaluatorSubmissions")
+  
+  // Messaging
+  conversationsAsElite  Conversation[]  @relation("EliteConversations")
+  conversationsAsMentor Conversation[]  @relation("MentorConversations")
+  sentMessages          Message[]       @relation("SenderMessages")
+  notifications         Notification[]
+  announcementsAuthored Announcement[]  @relation("AuthorAnnouncements")
+
+  @@index([email])
+  @@index([role, status])
+}
+
+model UserProfile {
+  id                String             @id @default(uuid())
+  userId            String             @unique
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eliteId           String?            @unique
+  fullName          String
+  phone             String?
+  avatarUrl         String?
+  bio               String?
+  githubUsername    String?
+  linkedinUrl       String?
+  enrollmentStatus  EnrollmentStatus   @default(ENROLLED)
+  programStartDate  DateTime?
+  programEndDate    DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([eliteId])
+  @@index([fullName])
+}
+
+model Role {
+  id                String             @id @default(uuid())
+  name              UserRole           @unique
+  description       String
+  permissions       RolePermission[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model Permission {
+  id                String             @id @default(uuid())
+  action            String             // e.g. "tasks:create", "xp:adjust", "users:archive"
+  resource          String             // e.g. "tasks", "xp", "users", "leaderboard"
+  description       String
+  rolePermissions   RolePermission[]
+  userAssignments   UserRoleAssignment[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@unique([action, resource])
+}
+
+model RolePermission {
+  id                String             @id @default(uuid())
+  roleId            String
+  role              Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permissionId      String
+  permission        Permission         @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  
+  @@unique([roleId, permissionId])
+}
+
+model UserRoleAssignment {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissionId      String
+  permission        Permission         @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  grantedBy         String
+  createdAt         DateTime           @default(now())
+
+  @@unique([userId, permissionId])
+}
+
+model Session {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionTokenHash  String             @unique
+  ipAddress         String?
+  userAgent         String?
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  createdAt         DateTime           @default(now())
+
+  @@index([sessionTokenHash])
+  @@index([userId])
+}
+
+model OtpChallenge {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash          String
+  type              String             // "SUPER_ADMIN_LOGIN", "ADMIN_LOGIN", "ELITE_LOGIN", "PASSWORD_RESET"
+  attempts          Int                @default(0)
+  maxAttempts       Int                @default(3)
+  expiresAt         DateTime
+  verifiedAt        DateTime?
+  consumed          Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+
+  @@index([userId, type, consumed])
+}
+
+model Program {
+  id                String             @id @default(uuid())
+  name              String             @default("Thread Elite")
+  description       String?
+  durationMonths    Int                @default(12)
+  startDate         DateTime?
+  endDate           DateTime?
+  isActive          Boolean            @default(true)
+  settings          ProgramSettings?
+  promotionLevels   PromotionLevel[]
+  cohorts           Cohort[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model ProgramSettings {
+  id                String             @id @default(uuid())
+  programId         String             @unique
+  program           Program            @relation(fields: [programId], references: [id], onDelete: Cascade)
+  allowLateSubmissions Boolean         @default(true)
+  defaultGraceMinutes  Int             @default(30)
+  autoPublishLeaderboard Boolean       @default(false)
+  rankingTieBreakers Json?             // e.g. ["completion_rate", "submission_speed"]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model PromotionLevel {
+  id                String             @id @default(uuid())
+  programId         String
+  program           Program            @relation(fields: [programId], references: [id], onDelete: Cascade)
+  levelOrder        Int                // 1 to 5
+  name              String             // Foundation, Catalyst, Pioneer, Apex, Legacy
+  slug              String             @unique
+  description       String
+  requiredXP        Int                @default(0)
+  badgeUrl          String?
+  colorHex          String             @default("#3B82F6")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  memberships       EliteLevelMembership[]
+  fromHistory       PromotionHistory[]  @relation("FromPromotionLevel")
+  toHistory         PromotionHistory[]  @relation("ToPromotionLevel")
+  leaderboardSnapshots LeaderboardSnapshot[]
+
+  @@unique([programId, levelOrder])
+}
+
+model EliteLevelMembership {
+  id                String             @id @default(uuid())
+  eliteId           String
+  elite             User               @relation(fields: [eliteId], references: [id], onDelete: Cascade)
+  promotionLevelId  String
+  promotionLevel    PromotionLevel     @relation(fields: [promotionLevelId], references: [id], onDelete: Cascade)
+  isCurrent         Boolean            @default(true)
+  effectiveFrom     DateTime           @default(now())
+  effectiveTo       DateTime?
+  createdAt         DateTime           @default(now())
+
+  @@index([eliteId, isCurrent])
+}
+
+model PromotionHistory {
+  id                String             @id @default(uuid())
+  eliteId           String
+  elite             User               @relation("ElitePromotionHistory", fields: [eliteId], references: [id], onDelete: Cascade)
+  fromLevelId       String?
+  fromLevel         PromotionLevel?    @relation("FromPromotionLevel", fields: [fromLevelId], references: [id])
+  toLevelId         String
+  toLevel           PromotionLevel     @relation("ToPromotionLevel", fields: [toLevelId], references: [id])
+  promotedById      String
+  promotedBy        User               @relation("PromotedByHistory", fields: [promotedById], references: [id])
+  reason            String
+  notes             String?
+  timestamp         DateTime           @default(now())
+
+  @@index([eliteId])
+}
+
+model Cohort {
+  id                String             @id @default(uuid())
+  programId         String
+  program           Program            @relation(fields: [programId], references: [id], onDelete: Cascade)
+  name              String
+  code              String             @unique
+  startDate         DateTime
+  endDate           DateTime
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model MentorAssignment {
+  id                String             @id @default(uuid())
+  mentorId          String
+  mentor            User               @relation("MentorEliteAssignments", fields: [mentorId], references: [id], onDelete: Cascade)
+  eliteId           String
+  elite             User               @relation("EliteMentorAssignments", fields: [eliteId], references: [id], onDelete: Cascade)
+  assignedById      String
+  assignedAt        DateTime           @default(now())
+  isActive          Boolean            @default(true)
+  notes             String?
+
+  @@unique([mentorId, eliteId])
+  @@index([mentorId])
+  @@index([eliteId])
+}
+
+model Task {
+  id                    String         @id @default(uuid())
+  taskCode              String         @unique
+  title                 String
+  shortDescription      String
+  instructions          String
+  objectives            String[]       @default([])
+  category              String         // "SECURITY", "LEADERSHIP", "ARCHITECTURE", etc.
+  difficulty            TaskDifficulty @default(BEGINNER)
+  taskFormat            String[]       @default(["WRITTEN_RESPONSE"]) // Array of supported formats
+  status                TaskStatus     @default(DRAFT)
+  maxXP                 Int            @default(100)
+  submissionDeadline    DateTime
+  timezone              String         @default("UTC")
+  resubmissionAllowed   Boolean        @default(true)
+  maxResubmissions      Int            @default(3)
+  lateSubmissionsAllowed Boolean       @default(false)
+  latePenaltyPercent    Int            @default(10)
+  graceMinutes          Int            @default(15)
+  authorId              String
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  resources             TaskResource[]
+  targets               TaskTarget[]
+  assignments           TaskAssignment[]
+  rubric                TaskRubric?
+  submissions           Submission[]
+  xpTransactions        XPTransaction[]
+
+  @@index([taskCode])
+  @@index([status])
+  @@index([submissionDeadline])
+}
+
+model TaskResource {
+  id                String             @id @default(uuid())
+  taskId            String
+  task              Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title             String
+  url               String
+  resourceType      String             // "DOCS", "GITHUB", "VIDEO", "DRIVE", "EXTERNAL"
+  isRequired        Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+}
+
+model TaskTarget {
+  id                String             @id @default(uuid())
+  taskId            String
+  task              Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  targetType        String             // "ALL", "PROMOTION_LEVEL", "INDIVIDUAL", "COHORT"
+  targetValue       String             // Level ID, Cohort ID, or User ID ("*" for ALL)
+  createdAt         DateTime           @default(now())
+}
+
+model TaskAssignment {
+  id                String             @id @default(uuid())
+  taskId            String
+  task              Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  eliteId           String
+  elite             User               @relation(fields: [eliteId], references: [id], onDelete: Cascade)
+  status            SubmissionStatus   @default(NOT_STARTED)
+  deadlineOverride  DateTime?
+  assignedAt        DateTime           @default(now())
+
+  submissions       Submission[]
+
+  @@unique([taskId, eliteId])
+  @@index([eliteId, status])
+}
+
+model TaskRubric {
+  id                String             @id @default(uuid())
+  taskId            String             @unique
+  task              Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  name              String             @default("Default Rubric")
+  totalMaxScore     Int                @default(100)
+  criteria          TaskRubricCriterion[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model TaskRubricCriterion {
+  id                String             @id @default(uuid())
+  rubricId          String
+  rubric            TaskRubric         @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  title             String             // "Accuracy", "Technical Execution", etc.
+  description       String?
+  maxScore          Int                @default(20)
+  weight            Float              @default(1.0)
+  createdAt         DateTime           @default(now())
+
+  scores            EvaluationCriterionScore[]
+}
+
+model Submission {
+  id                String             @id @default(uuid())
+  taskId            String
+  task              Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  eliteId           String
+  elite             User               @relation(fields: [eliteId], references: [id], onDelete: Cascade)
+  assignmentId      String
+  assignment        TaskAssignment     @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  currentVersion    Int                @default(1)
+  status            SubmissionStatus   @default(SUBMITTED)
+  firstSubmittedAt  DateTime           @default(now())
+  lastSubmittedAt   DateTime           @default(now())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  versions          SubmissionVersion[]
+  evaluations       Evaluation[]
+
+  @@unique([taskId, eliteId])
+  @@index([eliteId])
+  @@index([status])
+}
+
+model SubmissionVersion {
+  id                String             @id @default(uuid())
+  submissionId      String
+  submission        Submission         @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  versionNumber     Int
+  submittedAt       DateTime           @default(now())
+  isLate            Boolean            @default(false)
+  textResponse      String?
+  filesJson         Json?              // [{ fileName, fileUrl, fileType, fileSize, storageKey }]
+  linksJson         Json?              // [{ label, url, platform }]
+  receiptReference  String             @unique
+  
+  evaluations       Evaluation[]
+
+  @@unique([submissionId, versionNumber])
+  @@index([receiptReference])
+}
+
+model Evaluation {
+  id                String             @id @default(uuid())
+  submissionId      String
+  submission        Submission         @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  versionId         String
+  version           SubmissionVersion  @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  evaluatorId       String
+  evaluator         User               @relation("EvaluatorSubmissions", fields: [evaluatorId], references: [id])
+  totalScore        Int                @default(0)
+  maxPossibleScore  Int                @default(100)
+  xpAwarded         Int                @default(0)
+  generalFeedback   String?
+  evaluatorNotes    String?
+  isDraft           Boolean            @default(true)
+  isPublished       Boolean            @default(false)
+  publishedAt       DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  criteriaScores    EvaluationCriterionScore[]
+  xpTransactions    XPTransaction[]
+
+  @@index([submissionId])
+  @@index([evaluatorId])
+}
+
+model EvaluationCriterionScore {
+  id                String             @id @default(uuid())
+  evaluationId      String
+  evaluation        Evaluation         @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  criterionId       String
+  criterion         TaskRubricCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  score             Int                @default(0)
+  feedback          String?
+
+  @@unique([evaluationId, criterionId])
+}
+
+model XPAccount {
+  id                String             @id @default(uuid())
+  eliteId           String             @unique
+  elite             User               @relation(fields: [eliteId], references: [id], onDelete: Cascade)
+  currentBalance    Int                @default(0)
+  lifetimeEarned    Int                @default(0)
+  lifetimeDeducted  Int                @default(0)
+  updatedAt         DateTime           @updatedAt
+}
+
+model XPTransaction {
+  id                String             @id @default(uuid())
+  eliteId           String
+  elite             User               @relation("EliteXPTransactions", fields: [eliteId], references: [id], onDelete: Cascade)
+  amount            Int
+  transactionType   XPTransactionType
+  taskId            String?
+  task              Task?              @relation(fields: [taskId], references: [id])
+  evaluationId      String?
+  evaluation        Evaluation?        @relation(fields: [evaluationId], references: [id])
+  issuingAdminId    String
+  issuingAdmin      User               @relation("AdminIssuedXP", fields: [issuingAdminId], references: [id])
+  reason            String
+  idempotencyKey    String             @unique
+  isReversed        Boolean            @default(false)
+  timestamp         DateTime           @default(now())
+
+  reversals         XPTransactionReversal[] @relation("OriginalTransaction")
+  replacementFor    XPTransactionReversal[] @relation("ReplacementTransaction")
+
+  @@index([eliteId])
+  @@index([idempotencyKey])
+}
+
+model XPTransactionReversal {
+  id                      String             @id @default(uuid())
+  originalTransactionId   String
+  originalTransaction     XPTransaction      @relation("OriginalTransaction", fields: [originalTransactionId], references: [id], onDelete: Cascade)
+  replacementTransactionId String?
+  replacementTransaction   XPTransaction?     @relation("ReplacementTransaction", fields: [replacementTransactionId], references: [id])
+  reversedById            String
+  reason                  String
+  reversedAt              DateTime           @default(now())
+
+  @@index([originalTransactionId])
+}
+
+model LeaderboardSnapshot {
+  id                String             @id @default(uuid())
+  scope             String             // "OVERALL", "PROMOTION_LEVEL", "MONTHLY", "QUARTERLY"
+  promotionLevelId  String?
+  promotionLevel    PromotionLevel?    @relation(fields: [promotionLevelId], references: [id])
+  title             String
+  publishedById     String
+  isPublished       Boolean            @default(true)
+  publishedAt       DateTime           @default(now())
+  entries           LeaderboardEntry[]
+
+  @@index([scope, publishedAt])
+}
+
+model LeaderboardEntry {
+  id                String             @id @default(uuid())
+  snapshotId        String
+  snapshot          LeaderboardSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  eliteId           String
+  rank              Int
+  totalXP           Int
+  tasksCompleted    Int
+  rankChange        Int                @default(0) // +1, -2, 0
+  metadataJson      Json?
+
+  @@index([snapshotId, rank])
+}
+
+model Announcement {
+  id                String               @id @default(uuid())
+  title             String
+  content           String
+  priority          AnnouncementPriority @default(NORMAL)
+  status            AnnouncementStatus   @default(DRAFT)
+  audienceType      String               // "ALL", "PROMOTION_LEVEL", "SELECTED_USERS", "MENTOR_GROUP"
+  audienceValue     String?              // e.g. level ID or group ID
+  publishAt         DateTime             @default(now())
+  expiresAt         DateTime?
+  senderId          String
+  sender            User                 @relation("AuthorAnnouncements", fields: [senderId], references: [id])
+  attachmentsJson   Json?
+  linksJson         Json?
+  recipientCount    Int                  @default(0)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  notifications     Notification[]
+
+  @@index([status, publishAt])
+}
+
+model Notification {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  announcementId    String?
+  announcement      Announcement?      @relation(fields: [announcementId], references: [id])
+  eventType         String             // "ACCOUNT_ACTIVATION", "OTP_LOGIN", "NEW_TASK", "XP_AWARDED", etc.
+  title             String
+  message           String
+  dataJson          Json?
+  channel           String             @default("IN_APP") // "IN_APP", "EMAIL", "PUSH"
+  deliveryStatus    DeliveryStatus     @default(QUEUED)
+  isRead            Boolean            @default(false)
+  readAt            DateTime?
+  deliveredAt       DateTime?
+  idempotencyKey    String?            @unique
+  createdAt         DateTime           @default(now())
+
+  @@index([userId, isRead])
+  @@index([deliveryStatus])
+}
+
+model Conversation {
+  id                String             @id @default(uuid())
+  eliteId           String
+  elite             User               @relation("EliteConversations", fields: [eliteId], references: [id], onDelete: Cascade)
+  mentorId          String
+  mentor            User               @relation("MentorConversations", fields: [mentorId], references: [id], onDelete: Cascade)
+  title             String             @default("Mentorship Inquiry")
+  status            ConversationStatus @default(OPEN)
+  lastMessageAt     DateTime           @default(now())
+  unreadEliteCount  Int                @default(0)
+  unreadMentorCount Int                @default(0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  messages          Message[]
+
+  @@index([eliteId])
+  @@index([mentorId])
+  @@index([status])
+}
+
+model Message {
+  id                String             @id @default(uuid())
+  conversationId    String
+  conversation      Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId          String
+  sender            User               @relation("SenderMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  body              String
+  attachmentsJson   Json?
+  isRead            Boolean            @default(false)
+  readAt            DateTime?
+  createdAt         DateTime           @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model CRMNote {
+  id                String             @id @default(uuid())
+  eliteId           String
+  elite             User               @relation("EliteCRMNotes", fields: [eliteId], references: [id], onDelete: Cascade)
+  authorId          String
+  author            User               @relation("AuthorCRMNotes", fields: [authorId], references: [id])
+  category          String             // "ACADEMIC", "DISCIPLINARY", "ACHIEVEMENT", "ADMINISTRATIVE", "GENERAL"
+  note              String
+  isConfidential    Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([eliteId])
+}
+
+model AuditLog {
+  id                String             @id @default(uuid())
+  actorId           String?
+  actor             User?              @relation("ActorAuditLogs", fields: [actorId], references: [id])
+  actorEmail        String?
+  actorRole         String?
+  action            String             // e.g. "USER_CREATED", "TASK_PUBLISHED", "GRADE_PUBLISHED", "XP_AWARDED"
+  entity            String             // e.g. "User", "Task", "Evaluation", "XPTransaction"
+  entityId          String?
+  previousState     Json?
+  newState          Json?
+  reason            String?
+  ipAddress         String?
+  userAgent         String?
+  requestId         String?
+  timestamp         DateTime           @default(now())
+
+  @@index([entity, entityId])
+  @@index([actorId])
+  @@index([action])
+  @@index([timestamp])
+}
+
+model AdminActivityLog {
+  id                String             @id @default(uuid())
+  adminId           String
+  admin             User               @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action            String
+  details           Json?
+  ipAddress         String?
+  timestamp         DateTime           @default(now())
+
+  @@index([adminId, timestamp])
+}
+
+model IntegrationSetting {
+  id                String             @id @default(uuid())
+  serviceName       String             @unique // "postgresql", "prisma", "redis", "bullmq", "resend", "storage"
+  integrationType   String             // "DATABASE", "QUEUE", "EMAIL", "STORAGE", "ANALYTICS"
+  status            IntegrationStatus  @default(PREP_MODE)
+  isRequired        Boolean            @default(true)
+  configJson        Json?
+  lastHealthCheck   DateTime?
+  lastError         String?
+  updatedAt         DateTime           @updatedAt
+}
