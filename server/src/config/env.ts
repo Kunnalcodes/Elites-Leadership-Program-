@@ -8,6 +8,12 @@ export const ENV = {
   REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
   EMAIL_FROM: process.env.EMAIL_FROM || 'Thread Elite <elite@threadsecurity.com>',
+  // Object Storage (S3 / Tigris / GCS)
+  S3_ENDPOINT: process.env.S3_ENDPOINT || '',
+  S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID || '',
+  S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY || '',
+  S3_BUCKET: process.env.S3_BUCKET || '',
+  S3_REGION: process.env.S3_REGION || 'auto',
   GCS_BUCKET: process.env.GCS_BUCKET || '',
   GCS_KEY_FILE: process.env.GCS_KEY_FILE || '',
   SESSION_SECRET: process.env.SESSION_SECRET || 'thread-elite-default-secret-key-32-chars-long-secure',

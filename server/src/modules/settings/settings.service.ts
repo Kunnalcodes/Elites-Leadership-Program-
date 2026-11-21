@@ -91,18 +91,18 @@ export class SettingsService {
         : 'PREP MODE — Delivery logger active; emails captured in delivery history',
     });
 
-    // 6. Object Storage
+    // 6. Object Storage (S3 / Tigris / GCS)
     const isStorageCloud = storageService.isCloudConfigured();
     reports.push({
       serviceName: 'storage',
       integrationType: 'OBJECT_STORAGE',
       status: isStorageCloud ? 'OPERATIONAL' : 'PREP_MODE',
       isRequired: false,
-      requiredEnvVars: ['GCS_BUCKET'],
+      requiredEnvVars: ['S3_BUCKET', 'S3_ACCESS_KEY_ID'],
       lastHealthCheck: new Date(),
-      lastError: isStorageCloud ? null : 'GCS_BUCKET not set',
+      lastError: isStorageCloud ? null : 'S3_BUCKET / GCS_BUCKET not configured',
       message: isStorageCloud 
-        ? 'GCS Cloud Object Storage configured' 
+        ? 'S3-Compatible Cloud Object Storage configured & active' 
         : 'PREP MODE — Local secure sandbox storage active',
     });
 
