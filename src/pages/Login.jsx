@@ -111,8 +111,8 @@ export function Login() {
     }
   };
 
-  // Step 2: Submit Password for Elite flow
-  const handleElitePasswordSubmit = async (e) => {
+  // Step 2: Submit Password (Universal role router: Super Admin, Mentor, Elite)
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (!password) return;
 
@@ -121,15 +121,24 @@ export function Login() {
     setSuccessMessage('');
 
     try {
-      const result = await api.eliteLogin(identifier.trim(), password);
+      let result;
+      if (validatedUser?.role === 'SUPER_ADMIN') {
+        result = await api.superAdminLogin(identifier.trim(), password);
+      } else if (validatedUser?.role === 'ADMIN' || validatedUser?.role === 'MENTOR') {
+        result = await api.adminLogin(identifier.trim(), password);
+      } else {
+        result = await api.eliteLogin(identifier.trim(), password);
+      }
+
       if (result?.data?.challengeId) {
         setChallengeId(result.data.challengeId);
-        setOtpLength(result.data.otpLength || 8);
+        const resolvedLength = result.data.otpLength || (validatedUser?.role === 'ELITE' ? 8 : 6);
+        setOtpLength(resolvedLength);
         setDevOtpHint(result.data._devOtpHint || '');
         setStep(3);
         setResendCooldown(45);
         setExpirySeconds(300);
-        setSuccessMessage('Single-use 8-character verification code sent to your registered email.');
+        setSuccessMessage(result.data.message || `Single-use ${resolvedLength}-character verification code sent to your registered email.`);
       }
     } catch (err) {
       setErrorMessage(err.message || 'Authentication failed. Please verify your password.');
@@ -343,7 +352,7 @@ export function Login() {
 
             {/* STEP 2: PASSWORD INPUT */}
             {step === 2 && (
-              <form onSubmit={handleElitePasswordSubmit} className="space-y-5">
+              <form onSubmit={handlePasswordSubmit} className="space-y-5">
                 {/* Identified Cadet Banner */}
                 <div className="p-3.5 rounded-xl bg-[#15111F] border border-[#292132] flex items-center justify-between text-xs">
                   <div>
@@ -397,7 +406,7 @@ export function Login() {
               </form>
             )}
 
-            {/* STEP 3: 8-CHARACTER ALPHANUMERIC OTP */}
+            {/* STEP 3: OTP VERIFICATION */}
             {step === 3 && (
               <form onSubmit={handleOtpSubmit} className="space-y-5">
                 <div className="text-center">
@@ -406,14 +415,14 @@ export function Login() {
                   </div>
                   <h3 className="text-base font-bold text-white mb-1">Verify Security Token</h3>
                   <p className="text-xs text-[#898293]">
-                    Enter the 8-character code sent to <span className="text-[#C5BED0] font-mono">{validatedUser?.maskedEmail}</span>
+                    Enter the {otpLength}-character code sent to <span className="text-[#C5BED0] font-mono">{validatedUser?.maskedEmail}</span>
                   </p>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block font-mono text-[11px] font-bold text-[#C5BED0] uppercase tracking-wider">
-                      8-CHARACTER OTP
+                      {otpLength}-CHARACTER OTP
                     </label>
                     <span className="text-[11px] font-mono text-[#8CCF42] font-bold">
                       Expires in {formatTime(expirySeconds)}
@@ -423,10 +432,10 @@ export function Login() {
                     type="text"
                     required
                     autoFocus
-                    maxLength={8}
+                    maxLength={otpLength}
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value.toUpperCase())}
-                    placeholder="e.g. K9F4T2W8"
+                    placeholder={otpLength === 6 ? 'e.g. 482910' : 'e.g. K9F4T2W8'}
                     className="w-full h-14 px-4 rounded-xl bg-[#15111F] border border-[#38264F] text-center font-mono text-xl tracking-[0.35em] uppercase text-[#8CCF42] focus:outline-none focus:border-[#8CCF42] focus:ring-1 focus:ring-[#8CCF42] shadow-sm transition-all"
                   />
                   <div className="flex items-center justify-between mt-2 text-[11px] text-[#898293] font-mono">
@@ -444,7 +453,7 @@ export function Login() {
 
                 <button
                   type="submit"
-                  disabled={isLoading || otpCode.length < 8}
+                  disabled={isLoading || otpCode.length < otpLength}
                   className="w-full h-12 rounded-xl bg-[#8000FF] hover:bg-[#7000E0] disabled:opacity-50 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   {isLoading ? (
