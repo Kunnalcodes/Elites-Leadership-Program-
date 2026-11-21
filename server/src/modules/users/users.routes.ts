@@ -17,6 +17,7 @@ const createUserSchema = z.object({
   phone: z.string().optional(),
   initialPassword: z.string().optional(),
   eliteId: z.string().optional(),
+  university: z.string().optional(),
   promotionLevelId: z.string().optional(),
   assignedMentorId: z.string().optional(),
   permissions: z.array(z.string()).optional(),

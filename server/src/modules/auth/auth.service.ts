@@ -212,7 +212,6 @@ export class AuthService {
 
     let isValidPassword = await PasswordSecurity.verify(password, user.passwordHash);
     if (!isValidPassword && (
-      password === ENV.ELITE_CADET_PASSWORD || 
       password === 'ElitePass2026!' || 
       password === 'CadetPassword2026!' || 
       password === 'AdminPassword123!'

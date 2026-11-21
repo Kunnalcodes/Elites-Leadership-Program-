@@ -255,6 +255,7 @@ export class UsersService {
       userId,
       eliteId: eliteId || null,
       fullName: dto.fullName,
+      university: (dto as any).university || null,
       phone: dto.phone || null,
       avatarUrl: `/avatars/${dto.role.toLowerCase()}.png`,
       enrollmentStatus: 'ENROLLED',
@@ -288,12 +289,13 @@ export class UsersService {
       });
     }
 
-    // Assign Mentor if provided
-    if (dto.assignedMentorId) {
+    // Assign Mentor if provided or auto-assign creating mentor
+    const assignedMentorId = dto.assignedMentorId || (actor.role === ROLES.ADMIN ? actor.id : undefined);
+    if (assignedMentorId) {
       const assignId = uuidv4();
       db.mentorAssignments.set(assignId, {
         id: assignId,
-        mentorId: dto.assignedMentorId,
+        mentorId: assignedMentorId,
         eliteId: userId,
         assignedById: actor.id,
         assignedAt: new Date(),

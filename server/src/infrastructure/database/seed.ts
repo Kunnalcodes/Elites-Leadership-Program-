@@ -76,7 +76,7 @@ export async function bootstrapSuperAdmin(): Promise<{ email: string; isNew: boo
 export async function bootstrapPlatformDefaults(): Promise<void> {
   const defaultPassword = 'AdminPassword123!';
   const defaultPasswordHash = await PasswordSecurity.hash(defaultPassword);
-  const elitePassword = ENV.ELITE_CADET_PASSWORD;
+  const elitePassword = 'ElitePass2026!';
   const elitePasswordHash = await PasswordSecurity.hash(elitePassword);
 
   // 1. Seed Task Mentor (Marcus Reynolds)
@@ -133,8 +133,8 @@ export async function bootstrapPlatformDefaults(): Promise<void> {
   const elitesData = [
     {
       id: 'usr-elite-001',
-      email: ENV.ELITE_CADET_EMAIL,
-      eliteId: ENV.ELITE_CADET_TS_ID,
+      email: 'dhiraj@threadsecurity.in',
+      eliteId: 'ELITE-2026-001',
       fullName: 'Dhiraj Roy',
       university: 'IIT Kharagpur',
       xp: 2980,

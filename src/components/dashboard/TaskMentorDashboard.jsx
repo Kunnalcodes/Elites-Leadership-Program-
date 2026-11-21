@@ -65,6 +65,16 @@ export function TaskMentorDashboard({ user, onLogout }) {
     deadlineDays: 7
   });
 
+  // Provision Cadet Modal
+  const [showProvisionModal, setShowProvisionModal] = useState(false);
+  const [provisionForm, setProvisionForm] = useState({
+    fullName: '',
+    email: '',
+    eliteId: '',
+    initialPassword: 'ElitePass2026!',
+    university: '',
+  });
+
   // Filter for submissions
   const [submissionFilter, setSubmissionFilter] = useState('ALL');
 
@@ -195,6 +205,35 @@ export function TaskMentorDashboard({ user, onLogout }) {
       loadData();
     } catch (err) {
       showToast('error', err.message || 'Failed to author task.');
+    }
+  };
+
+  // Provision Elite Cadet (Dynamically created by Task Mentor)
+  const handleProvisionCadet = async (e) => {
+    e.preventDefault();
+    try {
+      await api.createUser({
+        fullName: provisionForm.fullName,
+        email: provisionForm.email,
+        eliteId: provisionForm.eliteId || undefined,
+        initialPassword: provisionForm.initialPassword || 'ElitePass2026!',
+        university: provisionForm.university,
+        role: 'ELITE',
+        promotionLevelId: 'level-catalyst',
+      });
+
+      showToast('success', `Cadet ${provisionForm.fullName} provisioned and assigned successfully!`);
+      setShowProvisionModal(false);
+      setProvisionForm({
+        fullName: '',
+        email: '',
+        eliteId: '',
+        initialPassword: 'ElitePass2026!',
+        university: '',
+      });
+      loadData();
+    } catch (err) {
+      showToast('error', err.message || 'Failed to provision cadet.');
     }
   };
 
@@ -347,13 +386,23 @@ export function TaskMentorDashboard({ user, onLogout }) {
       {/* ============================================================== */}
       {activeNav === 'elites' && (
         <div className="space-y-6">
-          <div>
-            <h2 className="font-display text-2xl font-extrabold text-white">
-              My Assigned <span className="text-[#8000FF]">Elites</span>
-            </h2>
-            <p className="text-xs text-[#898293] mt-1 font-sans">
-              Conduct weekly performance check-ins, inspect submissions, and author recommendation citations.
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="font-display text-2xl font-extrabold text-white">
+                My Assigned <span className="text-[#8000FF]">Elites</span>
+              </h2>
+              <p className="text-xs text-[#898293] mt-1 font-sans">
+                Conduct weekly performance check-ins, inspect submissions, and author recommendation citations.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowProvisionModal(true)}
+              className="px-4 py-2.5 rounded-xl bg-[#8000FF] hover:bg-[#7000E0] text-white font-mono text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md self-start"
+            >
+              <UserPlus size={16} />
+              <span>Provision Cadet</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -889,6 +938,99 @@ export function TaskMentorDashboard({ user, onLogout }) {
                   className="px-4 py-2 rounded-xl bg-[#8000FF] hover:bg-[#7000E0] text-xs font-mono font-bold text-white cursor-pointer"
                 >
                   Publish to Elites
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: PROVISION CADET */}
+      {showProvisionModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#100D17] border border-[#38264F] rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-display text-lg font-bold text-white">Provision Elite Cadet</h3>
+                <p className="text-xs text-[#898293] mt-0.5">Directly onboard and mentor a new student leader.</p>
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-[#8000FF]/20 border border-[#8000FF] flex items-center justify-center text-[#BD7AFF]">
+                <UserPlus size={16} />
+              </div>
+            </div>
+
+            <form onSubmit={handleProvisionCadet} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-mono text-[#C5BED0] uppercase mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={provisionForm.fullName}
+                  onChange={(e) => setProvisionForm({ ...provisionForm, fullName: e.target.value })}
+                  placeholder="e.g. Ananya Sen"
+                  className="w-full h-10 px-3 rounded-xl bg-[#15111F] border border-[#38264F] text-xs text-white focus:outline-none focus:border-[#8CCF42]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono text-[#C5BED0] uppercase mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  required
+                  value={provisionForm.email}
+                  onChange={(e) => setProvisionForm({ ...provisionForm, email: e.target.value })}
+                  placeholder="e.g. ananya@threadsecurity.in"
+                  className="w-full h-10 px-3 rounded-xl bg-[#15111F] border border-[#38264F] text-xs text-white focus:outline-none focus:border-[#8CCF42]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-mono text-[#C5BED0] uppercase mb-1">Elite TS-ID (Optional)</label>
+                  <input
+                    type="text"
+                    value={provisionForm.eliteId}
+                    onChange={(e) => setProvisionForm({ ...provisionForm, eliteId: e.target.value })}
+                    placeholder="e.g. ELITE-2026-004"
+                    className="w-full h-10 px-3 rounded-xl bg-[#15111F] border border-[#38264F] text-xs text-white focus:outline-none focus:border-[#8CCF42]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-mono text-[#C5BED0] uppercase mb-1">University / College</label>
+                  <input
+                    type="text"
+                    value={provisionForm.university}
+                    onChange={(e) => setProvisionForm({ ...provisionForm, university: e.target.value })}
+                    placeholder="e.g. IIIT Hyderabad"
+                    className="w-full h-10 px-3 rounded-xl bg-[#15111F] border border-[#38264F] text-xs text-white focus:outline-none focus:border-[#8CCF42]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono text-[#C5BED0] uppercase mb-1">Initial Temporary Password *</label>
+                <input
+                  type="text"
+                  required
+                  value={provisionForm.initialPassword}
+                  onChange={(e) => setProvisionForm({ ...provisionForm, initialPassword: e.target.value })}
+                  className="w-full h-10 px-3 rounded-xl bg-[#15111F] border border-[#38264F] text-xs font-mono text-[#8CCF42] focus:outline-none focus:border-[#8CCF42]"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#292132]">
+                <button
+                  type="button"
+                  onClick={() => setShowProvisionModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-mono text-[#898293] hover:text-white cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-[#8000FF] hover:bg-[#7000E0] text-xs font-mono font-bold text-white cursor-pointer"
+                >
+                  Provision Cadet
                 </button>
               </div>
             </form>

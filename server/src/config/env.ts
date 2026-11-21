@@ -26,9 +26,4 @@ export const ENV = {
   TASK_MENTOR_EMAIL: process.env.TASK_MENTOR_EMAIL || 'mentor@threadsecurity.in',
   TASK_MENTOR_SECRET_KEY: process.env.TASK_MENTOR_SECRET_KEY || 'MentorKey2026!',
   TASK_MENTOR_PASSKEY: process.env.TASK_MENTOR_PASSKEY || 'MentorPass2026!',
-
-  // Elite Cadet Credentials
-  ELITE_CADET_TS_ID: process.env.ELITE_CADET_TS_ID || 'ELITE-2026-001',
-  ELITE_CADET_EMAIL: process.env.ELITE_CADET_EMAIL || 'dhiraj@threadsecurity.in',
-  ELITE_CADET_PASSWORD: process.env.ELITE_CADET_PASSWORD || 'ElitePass2026!',
 };
