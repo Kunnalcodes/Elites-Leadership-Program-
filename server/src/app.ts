@@ -38,7 +38,19 @@ export function createApp() {
 
   // CORS configuration
   app.use(cors({
-    origin: [ENV.CORS_ORIGIN, 'http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (same-origin, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        origin === ENV.CORS_ORIGIN ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin.endsWith('.onrender.com')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
