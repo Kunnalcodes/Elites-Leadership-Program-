@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../api/client';
 import DashboardLayout from './DashboardLayout';
+import ChampionshipLeaderboard from '../leaderboard/ChampionshipLeaderboard';
 
 export function EliteDashboard({ user, onLogout }) {
   const [activeNav, setActiveNav] = useState('overview');
@@ -409,37 +410,8 @@ export function EliteDashboard({ user, onLogout }) {
       {/* TAB 4: LIVE LEADERBOARD                                        */}
       {/* ============================================================== */}
       {activeNav === 'leaderboard' && (
-        <div className="space-y-6">
-          <div>
-            <h2 className="font-display text-2xl font-extrabold text-white">
-              Cohort <span className="text-[#8000FF]">Leaderboard</span>
-            </h2>
-            <p className="text-xs text-[#898293] mt-1 font-sans">
-              Live standings computed from authoritative XP ledger transactions.
-            </p>
-          </div>
-
-          {/* Podium */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { rank: 1, name: 'Dhiraj Roy', id: 'ELITE-2026-001', xp: '2,980 XP', border: '#FFD700', label: 'GOLD · CHAMPION' },
-              { rank: 2, name: 'Piyush Kumar', id: 'ELITE-2026-002', xp: '2,840 XP', border: '#C0C0C0', label: 'SILVER · RUNNER UP' },
-              { rank: 3, name: 'Kalpana Sharma', id: 'ELITE-2026-003', xp: '2,710 XP', border: '#CD7F32', label: 'BRONZE · THIRD PLACE' },
-            ].map((p) => (
-              <div 
-                key={p.rank} 
-                className="p-6 rounded-2xl bg-[#100D17] border relative overflow-hidden"
-                style={{ borderColor: `${p.border}50` }}
-              >
-                <div className="text-[10px] font-mono font-bold tracking-widest uppercase mb-1" style={{ color: p.border }}>
-                  {p.label}
-                </div>
-                <h3 className="font-bold text-lg text-white mb-0.5">{p.name}</h3>
-                <div className="text-xs font-mono text-[#898293] mb-4">{p.id}</div>
-                <div className="font-display text-2xl font-extrabold text-[#8CCF42]">{p.xp}</div>
-              </div>
-            ))}
-          </div>
+        <div className="-mx-4 sm:-mx-6 lg:-mx-8 -my-6">
+          <ChampionshipLeaderboard currentUser={user} />
         </div>
       )}
 

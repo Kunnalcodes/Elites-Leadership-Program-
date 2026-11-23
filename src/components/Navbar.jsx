@@ -29,6 +29,7 @@ export function Navbar() {
   const navLinks = [
     { label: 'Program', href: '/#program' },
     { label: 'Experience', href: '/#experience' },
+    { label: 'Leaderboard', href: '/leaderboard' },
     { label: 'The Journey', href: '/#journey' },
     { label: 'Community', href: '/#community' },
     { label: 'About', href: '/#about' },

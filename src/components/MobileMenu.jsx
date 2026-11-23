@@ -7,6 +7,7 @@ import { Button } from './Button';
 export const MobileMenu = ({ isOpen, onClose }) => {
   const navLinks = [
     { label: 'HOME', path: '/' },
+    { label: 'CHAMPIONSHIP STANDINGS', path: '/leaderboard' },
     { label: 'ABOUT', path: '/about' },
     { label: 'EXPERIENCE & PROGRAM', path: '/program' },
     { label: 'APPLY NOW', path: '/apply' },

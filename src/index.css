@@ -21,7 +21,20 @@
   --color-border-primary: #38264F;
   --color-border-subtle: #292132;
 
+  /* Motorsport / F1 Championship Palette */
+  --color-racing-bg: #101112;
+  --color-racing-surface: #191C1E;
+  --color-racing-elevated: #222628;
+  --color-racing-border: #34383A;
+  --color-racing-red: #E10600;
+  --color-racing-gold: #C8A65B;
+  --color-racing-silver: #A7ADB2;
+  --color-racing-bronze: #9E7A5A;
+  --color-racing-text: #F3F4F4;
+  --color-racing-muted: #8A9094;
+
   --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-f1: 'Oswald', -apple-system, sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-tech: 'Space Grotesk', monospace;
 }
@@ -31,6 +44,18 @@
   --background-secondary: #100D17;
   --surface: #15111F;
   --surface-elevated: #1D1729;
+
+  /* F1 Palette Root */
+  --racing-bg: #101112;
+  --racing-surface: #191C1E;
+  --racing-elevated: #222628;
+  --racing-border: #34383A;
+  --racing-red: #E10600;
+  --racing-gold: #C8A65B;
+  --racing-silver: #A7ADB2;
+  --racing-bronze: #9E7A5A;
+  --racing-text: #F3F4F4;
+  --racing-muted: #8A9094;
 
   --violet-primary: #8000FF;
   --violet-secondary: #A020F0;

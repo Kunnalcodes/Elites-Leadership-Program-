@@ -101,6 +101,7 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/leaderboards/top-three${query ? `?${query}` : ''}`, { method: 'GET' });
   },
+  getChampionshipMeta: () => request('/leaderboards/meta', { method: 'GET' }),
   publishLeaderboard: (data) => request('/leaderboards/publish', { method: 'POST', body: data }),
 
   // Communication

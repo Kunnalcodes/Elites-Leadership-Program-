@@ -7,6 +7,7 @@ import { About } from './pages/About';
 import { Program } from './pages/Program';
 import { Apply } from './pages/Apply';
 import { Login } from './pages/Login';
+import { LeaderboardPage } from './pages/LeaderboardPage';
 import { DashboardRouter } from './pages/DashboardRouter';
 
 // Helper component to reset scroll position on page change
@@ -32,6 +33,7 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/program" element={<Program />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

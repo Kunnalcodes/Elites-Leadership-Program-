@@ -10,7 +10,17 @@ export class LeaderboardController {
         scope as string,
         levelId as string
       );
-      return sendSuccess(res, standings, 'Leaderboard standings retrieved');
+      const meta = await leaderboardService.getChampionshipMetadata();
+      return sendSuccess(res, standings, 'Leaderboard standings retrieved', 200, meta);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getChampionshipMeta(req: Request, res: Response, next: NextFunction) {
+    try {
+      const meta = await leaderboardService.getChampionshipMetadata();
+      return sendSuccess(res, meta, 'Championship metadata retrieved');
     } catch (error) {
       next(error);
     }

@@ -19,7 +19,7 @@ export function Footer() {
     { label: 'Experience', href: '/#experience', external: false },
     { label: 'Progression', href: '/#journey', external: false },
     { label: 'Tasks', href: '/#tasks', external: false },
-    { label: 'Leaderboard', href: '/#leaderboard', external: false },
+    { label: 'Leaderboard', href: '/leaderboard', external: false },
   ];
 
   const navResources = [
