@@ -24,13 +24,9 @@ export const MobileMenu = ({ isOpen, onClose }) => {
         >
           {/* Header Bar inside Mobile Menu */}
           <div className="flex justify-between items-center border-b border-white/10 pb-6">
-            <div className="flex items-center gap-3">
-              <Shield className="text-[#8BAF00]" size={28} />
-              <div className="flex flex-col">
-                <span className="font-display text-xl font-bold tracking-wider">THREAD ELITE</span>
-                <span className="text-[10px] font-mono text-gray-400 tracking-widest">THREAD SECURITY EDUCATION</span>
-              </div>
-            </div>
+            <Link to="/" onClick={onClose} className="flex items-center gap-3">
+              <img src="/logo.png" alt="Thread Elite" className="h-8 w-auto object-contain" />
+            </Link>
             <button 
               onClick={onClose}
               className="p-3 text-white hover:text-[#8BAF00] transition-colors rounded-full border border-white/10"

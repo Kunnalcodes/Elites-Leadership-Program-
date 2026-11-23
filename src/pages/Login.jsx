@@ -243,13 +243,12 @@ export function Login() {
               setAccessMode(accessMode === 'elite' ? 'clearance' : 'elite');
             }}
             title={accessMode === 'elite' ? 'Privileged Clearance Access' : 'Return to Standard Elite Access'}
-            className="group relative p-3 rounded-2xl bg-[#100D17] border border-[#292132] hover:border-[#8000FF] transition-all mb-4 focus:outline-none"
+            className="group relative p-2.5 rounded-2xl bg-[#100D17] border border-[#292132] hover:border-[#8000FF] transition-all mb-4 focus:outline-none"
           >
-            <Shield 
-              size={28} 
-              className={`transition-colors ${
-                accessMode === 'clearance' ? 'text-[#8000FF]' : 'text-[#8CCF42] group-hover:text-white'
-              }`} 
+            <img 
+              src="/emblem-shield.png" 
+              alt="Security Emblem" 
+              className="w-8 h-8 object-contain transition-transform group-hover:scale-105" 
             />
             {/* Subtle glow dot */}
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#8CCF42] rounded-full ring-4 ring-[#08070C] animate-pulse" />
@@ -261,10 +260,14 @@ export function Login() {
             </span>
           </div>
 
-          <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            THREAD <span className="text-[#8000FF]">ELITE</span>
-          </h1>
-          <p className="text-xs text-[#898293] mt-1 font-sans">
+          <div className="flex justify-center mb-1">
+            <img 
+              src="/logo.png" 
+              alt="Thread Elite" 
+              className="h-10 sm:h-12 w-auto object-contain mx-auto" 
+            />
+          </div>
+          <p className="text-xs text-[#898293] mt-2 font-sans">
             {accessMode === 'clearance' 
               ? 'Multi-factor privileged verification gateway'
               : 'Student Leadership Program · Learn · Execute · Lead · Grow'}

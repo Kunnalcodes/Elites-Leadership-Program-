@@ -43,18 +43,12 @@ export function Navbar() {
       >
         <div className="elite-container flex items-center justify-between">
           {/* Brand Emblem & Wordmark in White Tone */}
-          <Link to="/" className="flex items-center gap-3.5 group">
-            <div className="w-10 h-10 rounded-md bg-[#F4EEFF] border border-[#BD7AFF]/40 flex items-center justify-center text-[#8000FF] group-hover:border-[#8000FF] group-hover:bg-[#ECE0FF] transition-all duration-200 shadow-sm">
-              <Shield className="w-5 h-5 text-[#8000FF]" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-heading text-lg font-bold tracking-tight text-gray-900 flex items-center gap-1.5">
-                THREAD <span className="text-[#8000FF]">ELITE</span>
-              </span>
-              <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase font-semibold">
-                Student Leadership Program
-              </span>
-            </div>
+          <Link to="/" className="flex items-center gap-3 group">
+            <img 
+              src="/logo-light.png" 
+              alt="Thread Elite" 
+              className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105" 
+            />
           </Link>
 
           {/* Desktop Center Navigation in White Tone */}

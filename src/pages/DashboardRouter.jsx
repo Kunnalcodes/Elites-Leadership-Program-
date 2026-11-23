@@ -48,8 +48,8 @@ export function DashboardRouter() {
   if (isLoading) {
     return (
       <main className="w-full min-h-screen bg-[#08070C] text-white flex flex-col items-center justify-center p-4">
-        <div className="w-12 h-12 rounded-2xl bg-[#8000FF] flex items-center justify-center text-white mb-4 animate-pulse">
-          <Shield size={24} />
+        <div className="mb-4 animate-pulse">
+          <img src="/emblem-shield.png" alt="Thread Elite Enclave" className="w-12 h-12 object-contain" />
         </div>
         <div className="flex items-center gap-2 font-mono text-xs text-[#8CCF42]">
           <RefreshCw size={14} className="animate-spin" />

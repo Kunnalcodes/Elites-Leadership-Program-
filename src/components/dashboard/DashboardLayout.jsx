@@ -98,13 +98,11 @@ export function DashboardLayout({
           </button>
 
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-[#8000FF] flex items-center justify-center text-white shadow-md">
-              <Shield size={18} />
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-display font-extrabold text-sm tracking-wider text-white">THREAD</span>
-              <span className="font-display font-bold text-sm tracking-wider text-[#8000FF] ml-1">ELITE</span>
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Thread Elite" 
+              className="h-8 w-auto object-contain transition-transform duration-200 group-hover:scale-105" 
+            />
           </Link>
 
           {/* Role Status Tag */}
