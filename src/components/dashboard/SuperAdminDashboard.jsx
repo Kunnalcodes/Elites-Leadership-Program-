@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../api/client';
 import DashboardLayout from './DashboardLayout';
+import ChampionshipLeaderboard from '../leaderboard/ChampionshipLeaderboard';
 
 export function SuperAdminDashboard({ user, onLogout }) {
   const [activeNav, setActiveNav] = useState('overview');
@@ -42,6 +43,7 @@ export function SuperAdminDashboard({ user, onLogout }) {
   const [announcements, setAnnouncements] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
   const [promotionLevels, setPromotionLevels] = useState([]);
+  const [leaderboardViewMode, setLeaderboardViewMode] = useState('championship');
 
   // Filters & Search
   const [userSearch, setUserSearch] = useState('');
@@ -679,15 +681,49 @@ export function SuperAdminDashboard({ user, onLogout }) {
                 Real-time standings, podium rankings, and audited manual XP adjustments.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowXpModal(true)}
-              className="px-4 py-2.5 rounded-xl bg-[#8000FF] hover:bg-[#7000E0] text-white font-mono text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md self-start"
-            >
-              <Zap size={16} />
-              <span>Manual XP Adjustment</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex bg-[#100D17] border border-[#292132] rounded-xl p-1 text-xs font-mono">
+                <button
+                  type="button"
+                  onClick={() => setLeaderboardViewMode('championship')}
+                  className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    leaderboardViewMode === 'championship'
+                      ? 'bg-[#E10600] text-white font-bold'
+                      : 'text-[#898293] hover:text-white'
+                  }`}
+                >
+                  F1 Championship Grid
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLeaderboardViewMode('admin')}
+                  className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    leaderboardViewMode === 'admin'
+                      ? 'bg-[#8000FF] text-white font-bold'
+                      : 'text-[#898293] hover:text-white'
+                  }`}
+                >
+                  Admin XP Ledger
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowXpModal(true)}
+                className="px-4 py-2.5 rounded-xl bg-[#8000FF] hover:bg-[#7000E0] text-white font-mono text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md self-start"
+              >
+                <Zap size={16} />
+                <span>Manual XP Adjustment</span>
+              </button>
+            </div>
           </div>
+
+          {leaderboardViewMode === 'championship' ? (
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8 -my-2">
+              <ChampionshipLeaderboard currentUser={user} />
+            </div>
+          ) : (
+            <div className="space-y-6">
 
           {/* Top 3 Podium Showcase */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -756,6 +792,8 @@ export function SuperAdminDashboard({ user, onLogout }) {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
         </div>
       )}
 
