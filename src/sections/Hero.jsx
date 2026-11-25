@@ -117,79 +117,68 @@ export function Hero() {
           </Link>
         </motion.div>
 
-        {/* ── 3D Image Slider with Shield in Front ── */}
+        {/* ── 3D Image Slider with Imposing Shield at Center (Flow-out Showcase) ── */}
         <motion.div
           variants={item}
-          className="relative w-full h-[520px] sm:h-[580px] md:h-[640px] flex items-center justify-center rounded-3xl overflow-hidden my-6 border border-[#38264F]/30 bg-[#0A0810]/60 shadow-2xl"
+          className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] h-[580px] sm:h-[660px] md:h-[740px] flex items-center justify-center my-6 overflow-hidden select-none"
         >
-          {/* Background Ambient Radial Glow */}
-          <div className="absolute inset-0 bg-radial from-[#8000FF]/20 via-[#8CCF42]/10 to-transparent blur-3xl pointer-events-none" />
+          {/* Panoramic Ambient Radial Glow */}
+          <div className="absolute inset-0 bg-radial from-[#8000FF]/25 via-[#8CCF42]/12 to-transparent blur-3xl pointer-events-none" />
 
-          {/* 3D Cylindrical Photo Marquee (Smooth continuous rotation in the background/midground) */}
+          {/* 3D Semi-Circle Photo Marquee (Smooth continuous rotation spanning edge-to-edge behind the shield) */}
           <div className="absolute inset-0 flex items-center justify-center z-0">
-            <ImageSlider3D duration={30} cardWidth="15em" perspective="55em" />
+            <ImageSlider3D duration={32} cardWidth="13.5em" perspective="62em" />
           </div>
 
-          {/* The Shield layered IN FRONT of the photo marquees (z-20) */}
+          {/* The Shield layered IN FRONT of the photo marquees (z-20) - Dominant & commanding */}
           <div className="relative z-20 flex flex-col items-center justify-center pointer-events-none select-none">
             {/* Vertical Green Neon Laser Energy Beam passing through the shield */}
-            <div className="absolute -top-36 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#8CCF42] to-transparent blur-[1px] opacity-95 shadow-[0_0_30px_#8CCF42]" />
-            <div className="absolute -top-28 bottom-0 w-6 bg-gradient-to-b from-transparent via-[#8CCF42]/40 to-transparent blur-lg pointer-events-none" />
+            <div className="absolute -top-40 bottom-0 w-1.5 bg-gradient-to-b from-transparent via-[#8CCF42] to-transparent blur-[1px] opacity-95 shadow-[0_0_35px_#8CCF42]" />
+            <div className="absolute -top-32 bottom-0 w-10 bg-gradient-to-b from-transparent via-[#8CCF42]/40 to-transparent blur-xl pointer-events-none" />
 
-            {/* Floating Shield Emblem */}
+            {/* Floating Shield Emblem (Enlarged to tower prominently in front of the cards) */}
             <motion.div
               animate={{
-                y: [0, -14, 0],
-                scale: [1, 1.03, 1],
+                y: [0, -16, 0],
+                scale: [1, 1.025, 1],
               }}
               transition={{
-                duration: 5,
+                duration: 5.5,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
-              className="relative"
+              className="relative flex items-center justify-center"
               style={{
-                filter: 'drop-shadow(0 0 55px rgba(140,207,66,0.8)) drop-shadow(0 25px 70px rgba(128,0,255,0.55))',
+                filter: 'drop-shadow(0 0 65px rgba(140,207,66,0.85)) drop-shadow(0 30px 85px rgba(128,0,255,0.6))',
               }}
             >
               {/* Pulse Rings */}
-              <div className="absolute inset-0 -m-8 rounded-full border border-[#8CCF42]/40 animate-ping opacity-30 pointer-events-none" />
-              <div className="absolute inset-0 -m-4 rounded-full border border-[#8000FF]/50 pointer-events-none opacity-40" />
+              <div className="absolute inset-0 -m-10 rounded-full border border-[#8CCF42]/40 animate-ping opacity-25 pointer-events-none" />
+              <div className="absolute inset-0 -m-5 rounded-full border border-[#8000FF]/50 pointer-events-none opacity-40" />
 
               <img
                 src={heroShieldSvg}
                 alt="Thread Elite Shield Emblem"
-                className="w-48 sm:w-60 md:w-72 lg:w-80 h-auto object-contain drop-shadow-2xl"
+                className="w-72 sm:w-[400px] md:w-[500px] lg:w-[580px] xl:w-[640px] h-auto object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
                 loading="eager"
               />
 
               {/* Radial Core Glow */}
-              <div className="absolute inset-0 bg-radial from-[#8CCF42]/40 via-transparent to-transparent blur-xl pointer-events-none" />
+              <div className="absolute inset-0 bg-radial from-[#8CCF42]/40 via-transparent to-transparent blur-2xl pointer-events-none" />
 
-              {/* Text Layered Directly Over the Shield */}
+              {/* Text Layered Directly Over the Shield (Bold, cinematic, commanding) */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-2 pointer-events-none z-30 select-none">
-                <span className="font-mono text-[9px] sm:text-[11px] font-black tracking-[0.25em] text-[#8CCF42] uppercase px-3 py-0.5 rounded-full bg-[#08070C]/85 border border-[#8CCF42]/60 shadow-[0_0_15px_rgba(140,207,66,0.6)] backdrop-blur-md mb-1">
+                <span className="font-mono text-[11px] sm:text-xs md:text-sm font-black tracking-[0.35em] text-[#8CCF42] uppercase px-4 py-1 rounded-full bg-[#08070C]/90 border border-[#8CCF42]/70 shadow-[0_0_20px_rgba(140,207,66,0.6)] backdrop-blur-md mb-1.5 sm:mb-2.5">
                   THREAD SECURITY
                 </span>
-                <span className="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white tracking-widest drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+                <span className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white tracking-widest drop-shadow-[0_6px_30px_rgba(0,0,0,1)] leading-none my-1">
                   ELITE
                 </span>
-                <span className="font-mono text-[8px] sm:text-[10px] font-bold text-[#BD7AFF] tracking-[0.2em] uppercase mt-1 px-2.5 py-0.5 rounded bg-[#15111F]/85 border border-[#8000FF]/50 backdrop-blur-md shadow-[0_0_10px_rgba(128,0,255,0.4)]">
-                  COHORT // 2026
+                <span className="font-mono text-[9px] sm:text-[11px] md:text-xs font-bold text-[#BD7AFF] tracking-[0.25em] uppercase mt-2 sm:mt-3 px-3.5 py-1 rounded bg-[#15111F]/90 border border-[#8000FF]/60 backdrop-blur-md shadow-[0_0_15px_rgba(128,0,255,0.45)]">
+                  LEADERSHIP COHORT // 2026
                 </span>
               </div>
             </motion.div>
-          </div>
-
-          {/* Interactive Hint Banner at top of 3D showcase */}
-          <div className="absolute top-4 left-6 right-6 flex items-center justify-between text-[10px] font-mono text-[#898293] pointer-events-none z-20">
-            <span className="flex items-center gap-1.5 text-[#8CCF42]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8CCF42] animate-ping" />
-              <span>3D REVOLVING CADET STREAM</span>
-            </span>
-            <span className="hidden sm:inline text-[#BD7AFF]">
-              DRAG TO ROTATE · HOVER TO SLOW
-            </span>
           </div>
         </motion.div>
 

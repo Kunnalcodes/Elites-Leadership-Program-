@@ -197,16 +197,16 @@ export function ImageSlider3D({
               />
 
               {/* Cyber scanline & gradient shading */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#08070C] via-black/15 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#08070C] via-black/20 to-transparent pointer-events-none" />
 
               {/* Technical corner brackets */}
               <span className="absolute top-2.5 left-2.5 w-2.5 h-2.5 border-t-2 border-l-2 border-[#8CCF42]/80 pointer-events-none" />
               <span className="absolute bottom-2.5 right-2.5 w-2.5 h-2.5 border-b-2 border-r-2 border-[#8CCF42]/80 pointer-events-none" />
 
               {/* Bottom Card Monogram Status Badge */}
-              <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[10px] font-mono font-bold text-white/90 px-2.5 py-1 rounded bg-[#08070C]/90 backdrop-blur-md border border-white/15 pointer-events-none">
-                <span className="text-[#8CCF42]">ID // 0{index + 1}</span>
-                <span className="text-[#BD7AFF] tracking-wider uppercase">ONLINE</span>
+              <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[9px] font-mono font-bold text-white/90 px-2.5 py-1 rounded-md bg-[#08070C]/85 backdrop-blur-md border border-white/10 pointer-events-none">
+                <span className="text-[#8CCF42] tracking-wider">ELITE OPERATIVE</span>
+                <span className="text-[#BD7AFF] tracking-widest uppercase">#{index + 1 < 10 ? `0${index + 1}` : index + 1}</span>
               </div>
             </div>
           );
@@ -216,8 +216,8 @@ export function ImageSlider3D({
       {/* Smooth vignette fade on the left & right edges to soften semi-circle entry/exit */}
       {withMask && (
         <>
-          <div className="absolute inset-y-0 left-0 w-28 sm:w-56 bg-gradient-to-r from-[#08070C] via-[#08070C]/85 to-transparent pointer-events-none z-20" />
-          <div className="absolute inset-y-0 right-0 w-28 sm:w-56 bg-gradient-to-l from-[#08070C] via-[#08070C]/85 to-transparent pointer-events-none z-20" />
+          <div className="absolute inset-y-0 left-0 w-32 sm:w-64 md:w-80 bg-gradient-to-r from-[#08070C] via-[#08070C]/80 to-transparent pointer-events-none z-20" />
+          <div className="absolute inset-y-0 right-0 w-32 sm:w-64 md:w-80 bg-gradient-to-l from-[#08070C] via-[#08070C]/80 to-transparent pointer-events-none z-20" />
         </>
       )}
     </div>
