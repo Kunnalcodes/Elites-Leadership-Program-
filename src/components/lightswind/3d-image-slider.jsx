@@ -135,6 +135,8 @@ export function ImageSlider3D({
       style={{
         perspective,
         WebkitPerspective: perspective,
+        perspectiveOrigin: '50% 50%',
+        WebkitPerspectiveOrigin: '50% 50%',
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -168,6 +170,7 @@ export function ImageSlider3D({
           width: cardWidth,
           aspectRatio: cardAspectRatio,
           transformStyle: 'preserve-3d',
+          transformOrigin: '50% 50%',
           willChange: 'transform',
         }}
       >
@@ -180,6 +183,7 @@ export function ImageSlider3D({
               className="absolute inset-0 rounded-2xl overflow-hidden border border-white/20 bg-[#15111F]/90 shadow-[0_15px_45px_rgba(0,0,0,0.9)] group transition-all duration-300 hover:border-[#8CCF42] hover:shadow-[0_0_35px_rgba(140,207,66,0.5)]"
               style={{
                 transformStyle: 'preserve-3d',
+                transformOrigin: '50% 50%',
                 transform: `rotateY(${angle}deg) translateZ(${computedRadius})`,
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
