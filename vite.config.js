@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { fork } from 'child_process';
 import net from 'net';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function backendServerPlugin() {
   let backendProc = null;
@@ -47,6 +51,11 @@ export default defineConfig({
     tailwindcss(),
     backendServerPlugin()
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   build: {
     chunkSizeWarningLimit: 2500,
     rollupOptions: {
