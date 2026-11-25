@@ -108,26 +108,26 @@ export function Hero() {
         {/* ── 3D Image Slider with Shield in Front ── */}
         <motion.div
           variants={item}
-          className="relative w-full h-[460px] sm:h-[520px] md:h-[580px] flex items-center justify-center rounded-2xl overflow-hidden my-4"
+          className="relative w-full h-[520px] sm:h-[580px] md:h-[640px] flex items-center justify-center rounded-3xl overflow-hidden my-6 border border-[#38264F]/30 bg-[#0A0810]/60 shadow-2xl"
         >
           {/* Background Ambient Radial Glow */}
-          <div className="absolute inset-0 bg-radial from-[#8000FF]/15 via-[#8CCF42]/10 to-transparent blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-radial from-[#8000FF]/20 via-[#8CCF42]/10 to-transparent blur-3xl pointer-events-none" />
 
-          {/* 3D Cylindrical Photo Marquee (Rotating in the background/midground) */}
+          {/* 3D Cylindrical Photo Marquee (Smooth continuous rotation in the background/midground) */}
           <div className="absolute inset-0 flex items-center justify-center z-0">
-            <ImageSlider3D duration={32} cardWidth="15em" perspective="36em" />
+            <ImageSlider3D duration={30} cardWidth="15em" perspective="55em" />
           </div>
 
           {/* The Shield layered IN FRONT of the photo marquees (z-20) */}
           <div className="relative z-20 flex flex-col items-center justify-center pointer-events-none select-none">
             {/* Vertical Green Neon Laser Energy Beam passing through the shield */}
-            <div className="absolute -top-32 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#8CCF42] to-transparent blur-[1px] opacity-90 shadow-[0_0_25px_#8CCF42]" />
-            <div className="absolute -top-24 bottom-0 w-4 bg-gradient-to-b from-transparent via-[#8CCF42]/35 to-transparent blur-md pointer-events-none" />
+            <div className="absolute -top-36 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#8CCF42] to-transparent blur-[1px] opacity-95 shadow-[0_0_30px_#8CCF42]" />
+            <div className="absolute -top-28 bottom-0 w-6 bg-gradient-to-b from-transparent via-[#8CCF42]/40 to-transparent blur-lg pointer-events-none" />
 
             {/* Floating Shield Emblem */}
             <motion.div
               animate={{
-                y: [0, -12, 0],
+                y: [0, -14, 0],
                 scale: [1, 1.03, 1],
               }}
               transition={{
@@ -137,12 +137,12 @@ export function Hero() {
               }}
               className="relative"
               style={{
-                filter: 'drop-shadow(0 0 50px rgba(140,207,66,0.75)) drop-shadow(0 25px 60px rgba(128,0,255,0.5))',
+                filter: 'drop-shadow(0 0 55px rgba(140,207,66,0.8)) drop-shadow(0 25px 70px rgba(128,0,255,0.55))',
               }}
             >
               {/* Pulse Rings */}
-              <div className="absolute inset-0 -m-6 rounded-full border border-[#8CCF42]/40 animate-ping opacity-30 pointer-events-none" />
-              <div className="absolute inset-0 -m-3 rounded-full border border-[#8000FF]/50 pointer-events-none opacity-40" />
+              <div className="absolute inset-0 -m-8 rounded-full border border-[#8CCF42]/40 animate-ping opacity-30 pointer-events-none" />
+              <div className="absolute inset-0 -m-4 rounded-full border border-[#8000FF]/50 pointer-events-none opacity-40" />
 
               <img
                 src={heroShieldSvg}
@@ -152,8 +152,19 @@ export function Hero() {
               />
 
               {/* Radial Core Glow */}
-              <div className="absolute inset-0 bg-radial from-[#8CCF42]/35 via-transparent to-transparent blur-xl pointer-events-none" />
+              <div className="absolute inset-0 bg-radial from-[#8CCF42]/40 via-transparent to-transparent blur-xl pointer-events-none" />
             </motion.div>
+          </div>
+
+          {/* Interactive Hint Banner at top of 3D showcase */}
+          <div className="absolute top-4 left-6 right-6 flex items-center justify-between text-[10px] font-mono text-[#898293] pointer-events-none z-20">
+            <span className="flex items-center gap-1.5 text-[#8CCF42]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#8CCF42] animate-ping" />
+              <span>3D REVOLVING CADET STREAM</span>
+            </span>
+            <span className="hidden sm:inline text-[#BD7AFF]">
+              DRAG TO ROTATE · HOVER TO SLOW
+            </span>
           </div>
         </motion.div>
 
