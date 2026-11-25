@@ -4,18 +4,18 @@ import { motion } from 'framer-motion';
 const FEATURES = [
   {
     titleLine1: 'Lightning-Fast',
-    titleLine2: 'Robot Intelligence',
-    description: 'Train, automate, and deploy intelligent robots with speed',
+    titleLine2: 'Security Intelligence',
+    description: 'Train, automate, and deploy real-world defensive engineering with zero-trust precision',
   },
   {
-    titleLine1: 'Advanced AI &',
-    titleLine2: 'Smart Automation',
-    description: 'Customize behavior, vision, movement, and decision-making',
+    titleLine1: 'Criterion-Evaluated',
+    titleLine2: 'Merit & Ledgers',
+    description: 'Hands-on technical missions, verified credentials, and live cohort XP progression',
   },
   {
-    titleLine1: 'Precision',
-    titleLine2: 'Performance',
-    description: 'Engineered for accuracy, reliability, and real-world tasks',
+    titleLine1: 'Precision Leadership',
+    titleLine2: '& Industry Impact',
+    description: 'Engineered for student leaders ready to command technical excellence and executive impact',
   },
 ];
 
