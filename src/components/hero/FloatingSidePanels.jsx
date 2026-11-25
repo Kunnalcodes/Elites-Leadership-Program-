@@ -76,12 +76,12 @@ export function FloatingSidePanels() {
         transition={{ duration: 0.9, delay: 0.4, ease: 'easeOut' }}
         className="hidden xl:flex flex-col gap-3 absolute right-8 top-1/2 -translate-y-1/2 z-20 w-64 pointer-events-auto"
       >
-        <div className="flex items-center gap-2 mb-1 px-1">
+        {/* <div className="flex items-center gap-2 mb-1 px-1">
           <Sparkles size={12} className="text-[#8CCF42]" />
           <span className="font-mono text-[10px] text-[#898293] font-bold tracking-widest uppercase">
             HOLOGRAPHIC TIERS
           </span>
-        </div>
+        </div> */}
 
         {rightPillars.map((pillar, idx) => {
           const Icon = pillar.icon;
