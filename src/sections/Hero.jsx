@@ -27,6 +27,18 @@ export function Hero() {
       {/* Side panels */}
       <FloatingSidePanels />
 
+      {/* ── ENTIRE BACKGROUND SECTION HIGHLIGHT & SPOTLIGHT ── */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Massive vibrant green & purple spotlight aura filling the entire section backdrop */}
+        <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1600px] h-[950px] bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(140,207,66,0.32)_0%,rgba(128,0,255,0.24)_40%,rgba(8,7,12,0.85)_75%,transparent_100%)] blur-3xl pointer-events-none" />
+
+        {/* Dynamic green neon floor horizon beam */}
+        <div className="absolute top-[52%] left-0 right-0 h-48 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#8CCF42]/25 to-transparent blur-3xl pointer-events-none" />
+
+        {/* Ambient top energy glow */}
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(140,207,66,0.18)_0%,transparent_70%)] blur-3xl pointer-events-none" />
+      </div>
+
       {/* ── Central Hero Composition ── */}
       <motion.div
         variants={container}
@@ -153,6 +165,19 @@ export function Hero() {
 
               {/* Radial Core Glow */}
               <div className="absolute inset-0 bg-radial from-[#8CCF42]/40 via-transparent to-transparent blur-xl pointer-events-none" />
+
+              {/* Text Layered Directly Over the Shield */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-2 pointer-events-none z-30 select-none">
+                <span className="font-mono text-[9px] sm:text-[11px] font-black tracking-[0.25em] text-[#8CCF42] uppercase px-3 py-0.5 rounded-full bg-[#08070C]/85 border border-[#8CCF42]/60 shadow-[0_0_15px_rgba(140,207,66,0.6)] backdrop-blur-md mb-1">
+                  THREAD SECURITY
+                </span>
+                <span className="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white tracking-widest drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+                  ELITE
+                </span>
+                <span className="font-mono text-[8px] sm:text-[10px] font-bold text-[#BD7AFF] tracking-[0.2em] uppercase mt-1 px-2.5 py-0.5 rounded bg-[#15111F]/85 border border-[#8000FF]/50 backdrop-blur-md shadow-[0_0_10px_rgba(128,0,255,0.4)]">
+                  COHORT // 2026
+                </span>
+              </div>
             </motion.div>
           </div>
 

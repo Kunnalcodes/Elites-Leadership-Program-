@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 
-// Curated high-fidelity futuristic cyber, tech, and Thread Elite leadership portraits
-// matching the 3D robot/cyber showcase aesthetic in the reference design
+// Curated high-fidelity futuristic cyber, robotics, and Thread Elite leadership portraits
 const DEFAULT_IMAGES = [
   'https://images.unsplash.com/photo-1546776310-eef45dd6d63c?w=800&auto=format&fit=crop&q=80', // White robot helmet with beanie
   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80', // Dark pilot HUD grid visor
@@ -19,9 +18,9 @@ const DEFAULT_IMAGES = [
 
 export function ImageSlider3D({
   images = DEFAULT_IMAGES,
-  duration = 32,
-  cardWidth = '15em',
-  perspective = '55em',
+  duration = 30,
+  cardWidth = '14.5em',
+  perspective = '50em',
   cardAspectRatio = '7/10',
   withMask = true,
   rotationDirection = 'left',
@@ -39,14 +38,14 @@ export function ImageSlider3D({
   const count = cardList.length;
   const angleStep = 360 / count;
 
-  // Broad, cinematic cylinder radius so 7-8 cards span comfortably across the screen in 3D arc
+  // Semi-circle curved radius: broad panoramic amphitheater arc
   const computedRadius = useMemo(() => {
     if (customRadius) return customRadius;
-    const numericWidth = parseFloat(cardWidth) || 15;
+    const numericWidth = parseFloat(cardWidth) || 14.5;
     const unit = cardWidth.replace(/[\d.-]/g, '') || 'em';
-    // Generous panoramic curvature multiplier for wide marquee layout
+    // Calculate radius to form a broad, sweeping semi-circular amphitheater
     const baseRadius = (numericWidth / (2 * Math.tan(Math.PI / count)));
-    const wideRadius = Math.max(38, Math.round(baseRadius * 1.35));
+    const wideRadius = Math.max(42, Math.round(baseRadius * 1.4));
     return `${wideRadius}${unit}`;
   }, [cardWidth, count, customRadius]);
 
@@ -149,10 +148,22 @@ export function ImageSlider3D({
         isDraggingRef.current = false;
       }}
     >
-      {/* 3D Curved Stage Container */}
+      {/* ── ENTIRE BACKGROUND HIGHLIGHT & ILLUMINATION ── */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Massive vibrant green & violet radial spotlight illuminating the entire backdrop */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1300px] h-[650px] bg-[radial-gradient(ellipse_75%_55%_at_50%_50%,rgba(140,207,66,0.30)_0%,rgba(128,0,255,0.24)_42%,rgba(8,7,12,0.6)_70%,transparent_100%)] blur-3xl pointer-events-none" />
+
+        {/* Horizontal cyber neon horizon arc */}
+        <div className="absolute top-1/2 left-0 right-0 h-40 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#8CCF42]/25 to-transparent blur-2xl pointer-events-none" />
+
+        {/* Ambient lower floor green energy reflection */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full max-w-4xl h-24 bg-gradient-to-t from-[#8CCF42]/20 to-transparent blur-xl pointer-events-none" />
+      </div>
+
+      {/* ── 3D Semi-Circle Curved Stage ── */}
       <div
         ref={stageRef}
-        className="relative flex items-center justify-center pointer-events-auto"
+        className="relative flex items-center justify-center pointer-events-auto z-10"
         style={{
           width: cardWidth,
           aspectRatio: cardAspectRatio,
@@ -166,12 +177,12 @@ export function ImageSlider3D({
           return (
             <div
               key={index}
-              className="absolute inset-0 rounded-2xl overflow-hidden border border-white/20 bg-[#15111F]/90 shadow-[0_15px_45px_rgba(0,0,0,0.9)] group transition-all duration-300 hover:border-[#8CCF42] hover:shadow-[0_0_35px_rgba(140,207,66,0.4)]"
+              className="absolute inset-0 rounded-2xl overflow-hidden border border-white/20 bg-[#15111F]/90 shadow-[0_15px_45px_rgba(0,0,0,0.9)] group transition-all duration-300 hover:border-[#8CCF42] hover:shadow-[0_0_35px_rgba(140,207,66,0.5)]"
               style={{
                 transformStyle: 'preserve-3d',
                 transform: `rotateY(${angle}deg) translateZ(${computedRadius})`,
-                backfaceVisibility: 'visible',
-                WebkitBackfaceVisibility: 'visible',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
               }}
             >
               {/* Image */}
@@ -202,11 +213,11 @@ export function ImageSlider3D({
         })}
       </div>
 
-      {/* Smooth vignette fade on the left & right edges */}
+      {/* Smooth vignette fade on the left & right edges to soften semi-circle entry/exit */}
       {withMask && (
         <>
-          <div className="absolute inset-y-0 left-0 w-28 sm:w-56 bg-gradient-to-r from-[#08070C] via-[#08070C]/85 to-transparent pointer-events-none z-10" />
-          <div className="absolute inset-y-0 right-0 w-28 sm:w-56 bg-gradient-to-l from-[#08070C] via-[#08070C]/85 to-transparent pointer-events-none z-10" />
+          <div className="absolute inset-y-0 left-0 w-28 sm:w-56 bg-gradient-to-r from-[#08070C] via-[#08070C]/85 to-transparent pointer-events-none z-20" />
+          <div className="absolute inset-y-0 right-0 w-28 sm:w-56 bg-gradient-to-l from-[#08070C] via-[#08070C]/85 to-transparent pointer-events-none z-20" />
         </>
       )}
     </div>
