@@ -55,6 +55,7 @@ export function RobotMarquee({
   cardAspectRatio = '7/10',
   perspective = '60em',
   className = '',
+  children,
 }) {
   const containerRef = useRef(null);
   const stageRef = useRef(null);
@@ -141,7 +142,7 @@ export function RobotMarquee({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-[380px] sm:h-[440px] md:h-[500px] flex items-center justify-center select-none overflow-hidden cursor-grab active:cursor-grabbing ${className}`}
+      className={`relative w-full h-[420px] sm:h-[480px] md:h-[540px] flex items-center justify-center select-none overflow-hidden cursor-grab active:cursor-grabbing ${className}`}
       style={{
         perspective,
         WebkitPerspective: perspective,
@@ -239,6 +240,13 @@ export function RobotMarquee({
       {/* ── VERTICAL GREEN LASER LIGHT BEAM NEAR CENTER (From Reference) ── */}
       <div className="absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-transparent via-[#8CCF42] to-transparent shadow-[0_0_24px_#8CCF42] z-20 pointer-events-none opacity-90" />
       <div className="absolute top-12 bottom-12 left-1/2 -translate-x-1/2 w-6 bg-gradient-to-b from-transparent via-[#8CCF42]/30 to-transparent blur-md z-20 pointer-events-none" />
+
+      {/* ── OPTIONAL CENTERPIECE (e.g. Shield Emblem) ── */}
+      {children && (
+        <div className="relative z-30 flex flex-col items-center justify-center pointer-events-none select-none">
+          {children}
+        </div>
+      )}
 
       {/* ── SOFT VIGNETTE AROUND THE EDGES (Blending Seamlessly into #000000) ── */}
       <div className="absolute inset-y-0 left-0 w-28 sm:w-56 md:w-72 bg-gradient-to-r from-black via-black/85 to-transparent pointer-events-none z-20" />
