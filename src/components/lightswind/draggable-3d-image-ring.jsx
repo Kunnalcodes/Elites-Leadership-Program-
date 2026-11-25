@@ -183,7 +183,7 @@ export function ThreeDImageRing({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-[460px] sm:h-[520px] md:h-[580px] flex items-center justify-center select-none overflow-hidden cursor-grab active:cursor-grabbing ${className}`}
+      className={`relative w-full h-[460px] sm:h-[520px] md:h-[580px] flex items-center justify-center select-none overflow-visible cursor-grab active:cursor-grabbing ${className}`}
       style={{
         perspective: `${perspective}px`,
         WebkitPerspective: `${perspective}px`,
